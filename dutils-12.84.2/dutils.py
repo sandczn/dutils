@@ -10,7 +10,7 @@ import random
 
 
 
-dutils_version_num = "12.71.2"
+dutils_version_num = "12.84.2"
 dutils_version = "v" + dutils_version_num
 configf = open('./config.json', 'r+', encoding='utf-8')
 config = json.load(configf)
@@ -31,7 +31,7 @@ bleed_id = 593921296224747521
 blackcheat_config = config["blackcheat"]
 blackcheat_words = open(blackcheat_config['words_list_file_path'], 'r', encoding='utf-8') # Make sure the word list in in the same directory as the py file
 blackcheat_lines = blackcheat_words.readlines()
-blackcheat_version = 2.26
+blackcheat_version = 2.31
 used = []
 active_guilds = []
 
@@ -93,6 +93,8 @@ help_msg = f"""```
 					{prefix}blackcheat.true -> Enable BLACKCHEAT (BlackTea Cheat)
 
 					{prefix}blackcheat.false -> Disable BLACKCHEAT (BlackTea Cheat)
+
+					{prefix}blackcheat.reset -> Reset BLACKCHEAT's Data (Do this before new games) (BlackTea Cheat)
 					```"""
 
 
@@ -317,17 +319,25 @@ async def evaluate(message):
 		if clear:
 			await message.delete()
 		blackcheat = True
-		print(f"\nBlackcheat has been enabled for this session.\n")
+		print(f"\nBLACKCHEAT has been enabled for this session.\n")
 		if announce:
-			await message.channel.send(f"```Blackcheat has been enabled for this session.```")
+			await message.channel.send(f"```BLACKCHEAT has been enabled for this session.```")
 		
 	elif f"{prefix}blackcheat.false" in message.content.lower() and "available commands:" not in message.content.lower():
 		if clear:
 			await message.delete()
 		blackcheat = False		
-		print(f"\nBlackcheat has been disabled for this session.\n")
+		print(f"\nBLACKCHEAT has been disabled for this session.\n")
 		if announce:
-			await message.channel.send(f"```Blackcheat has been disabled for this session.```")
+			await message.channel.send(f"```BLACKCHEAT has been disabled for this session.```")
+
+	elif f"{prefix}blackcheat.reset" in message.content.lower() and "available commands:" not in message.content.lower():
+		if clear:
+			await message.delete()
+		used = []
+		print(f"\nBLACKCHEAT's data has been reset for this session.\n")
+		if announce:
+			await message.channel.send(f"```BLACKCHEAT's data has been reset for this session.```")
 	else:
 		return
 
@@ -370,7 +380,7 @@ async def on_message(message):
 				answerText = line
 				used.append(line)
 				break
-		print("\tAnswer Found\t\t:\t" + answerText)
+		print("\tAnswer Found\t\t\t:\t" + answerText)
 		pause = random.choice(blackcheat_config["pauses"])
 		print(f"\tSleeping for realism\t:\t{pause}\tseconds")
 		time.sleep(pause)
@@ -387,15 +397,15 @@ async def on_message_delete(message):
 	if (log_messages == True) and (message.channel.id in log_channels):
 		print(f"""
 
-		===================================================================================================================
-		
-		Deleted message logged at {datetime.datetime.now()}:
-		Author\t\t:\t{message.author.name}#{message.author.discriminator}\t\t\t(ID:{message.author.id})
-		Server\t\t:\t{message.guild.name}\t\t\t(ID:{message.guild.id})
-		Channel\t\t:\t{message.channel.name}\t\t\t(ID:{message.channel.id})
-		Message\t\t:\t{message.content}
+	==============================================================================================================
+	
+	Deleted message logged at {datetime.datetime.now()}:
+	Author\t\t:\t{message.author.name}#{message.author.discriminator}\t\t\t(ID:{message.author.id})
+	Server\t\t:\t{message.guild.name}\t\t\t(ID:{message.guild.id})
+	Channel\t\t:\t{message.channel.name}\t\t\t(ID:{message.channel.id})
+	Message\t\t:\t{message.content}
 
-		===================================================================================================================
+	==============================================================================================================
 		
 		""")
 
